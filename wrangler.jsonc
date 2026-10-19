@@ -13,7 +13,7 @@
       "binding": "DB",
       "database_name": "cffk_db",
       "migrations_dir": "database/migrations",
-      "database_id": "7945fb21-f505-4aae-9635-50e84e4d09aa"
+      "database_id": "YOUR_D1_DATABASE_ID"
     }
   ],
   "compatibility_flags": [
@@ -24,7 +24,7 @@
     "crons": ["* * * * *"]
   },
   "vars": {
-    "ADMIN_PATH": "admin-88cbf931"
+    "ADMIN_PATH": "YOUR_ADMIN_PATH"
   },
   "assets": {
     "directory": "./dist/client/"
