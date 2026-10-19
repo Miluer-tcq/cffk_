@@ -20,7 +20,7 @@
             <span class="min-w-0">
               <span class="flex min-w-0 items-center gap-2">
                 <span class="block truncate text-sm font-medium">{{ item.productName }}</span>
-                <Badge v-if="item.status" class="shrink-0" :variant="statusVariant?.(item.status)">{{ statusLabel?.(item.status) }}</Badge>
+                <Badge v-if="item.status" class="shrink-0" variant="outline" :class="statusClass?.(item.status)">{{ statusLabel?.(item.status) }}</Badge>
               </span>
               <span class="mt-1 block break-all font-mono text-[11px] leading-4 text-muted-foreground">{{ item.orderNo }}</span>
             </span>
@@ -60,7 +60,7 @@ defineProps<{
   onSelect: (item: OrderListItem, groupKey: string) => void;
   onDeleteGroup?: (groupKey: string) => void;
   statusLabel?: (status: string) => string;
-  statusVariant?: (status: string) => "default" | "secondary" | "destructive" | "outline";
+  statusClass?: (status: string) => string;
 }>();
 
 function formatDate(value: string | Date) {

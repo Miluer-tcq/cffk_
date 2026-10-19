@@ -4,10 +4,11 @@ import { ICON_MUSE } from "./icons/muse";
 import { ICON_DUOLINGO } from "./icons/duolingo";
 import { ICON_CLAUDE } from "./icons/claude";
 import { ICON_TOOL } from "./icons/tool";
+import { ICON_ADOBE } from "./icons/adobe";
 
-export { ICON_CHATGPT, ICON_GEMINI, ICON_MUSE, ICON_DUOLINGO, ICON_CLAUDE, ICON_TOOL };
+export { ICON_CHATGPT, ICON_GEMINI, ICON_MUSE, ICON_DUOLINGO, ICON_CLAUDE, ICON_TOOL, ICON_ADOBE };
 
-type IconKey = "chatgpt" | "gemini" | "muse" | "duolingo" | "claude" | "tool";
+type IconKey = "chatgpt" | "gemini" | "muse" | "duolingo" | "claude" | "tool" | "adobe";
 
 const KEYWORDS: Array<[RegExp, IconKey]> = [
   [/chatgpt|\bgpt\b/i, "chatgpt"],
@@ -15,7 +16,8 @@ const KEYWORDS: Array<[RegExp, IconKey]> = [
   [/\bmuse\b/i, "muse"],
   [/claude/i, "claude"],
   [/duolingo|多邻国/i, "duolingo"],
-  [/工具|效率/i, "tool"],
+  [/adobe/i, "adobe"],
+  [/\btool\b|工具|效率/i, "tool"],
 ];
 
 const ICONS: Record<IconKey, string> = {
@@ -25,6 +27,7 @@ const ICONS: Record<IconKey, string> = {
   duolingo: ICON_DUOLINGO,
   claude: ICON_CLAUDE,
   tool: ICON_TOOL,
+  adobe: ICON_ADOBE,
 };
 
 /** Pick a brand icon for a category/product by name/slug keywords. Null when nothing matches. */

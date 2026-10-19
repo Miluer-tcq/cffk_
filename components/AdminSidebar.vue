@@ -6,16 +6,16 @@
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <SidebarMenuButton size="lg" class="h-14 cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-                <img :src="logoUrl" alt="CFFK Logo" class="aspect-square size-10 rounded-lg object-contain" />
+                <img :src="logoUrl" alt="星云Shop Logo" class="aspect-square size-10 rounded-lg object-contain" />
                 <div class="grid flex-1 text-left leading-tight">
-                  <span class="truncate text-sm font-semibold">CFFK发卡</span>
+                  <span class="truncate text-sm font-semibold">星云Shop</span>
                   <span class="truncate text-xs">系统管理后台</span>
                 </div>
                 <ChevronsUpDownIcon class="ml-auto" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" align="start" :side-offset="8" class="w-64">
-              <DropdownMenuLabel>关于 CFFK 发卡</DropdownMenuLabel>
+              <DropdownMenuLabel>关于 星云Shop</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem @select.prevent="checkUpdate">
@@ -180,7 +180,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { adminNavigation, adminPages, isAdminNavigationItemActive, type AdminNavigationGroup, type AdminNavigationItem } from "@/lib/admin-navigation";
 import { BellIcon, ChevronRightIcon, ChevronUpIcon, ChevronsUpDownIcon, ClipboardListIcon, ExternalLinkIcon, InfoIcon, KeyRoundIcon, LayoutDashboardIcon, LogOutIcon, PackageIcon, SettingsIcon, UserRoundCogIcon, UsersIcon } from "@lucide/vue";
-import logoUrl from "@/assets/logo.svg?url";
+import logoUrl from "@/assets/xyshop-logo.svg?url";
 import { navigate } from "vike/client/router";
 import { computed, ref } from "vue";
 import { usePageContext } from "vike-vue/usePageContext";

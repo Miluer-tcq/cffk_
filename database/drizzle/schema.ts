@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { PUSH_MAX_ATTEMPTS } from "@/lib/push-utils";
-import { check, index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { check, index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 const createdAt = integer("createdAt", { mode: "timestamp_ms" }).notNull();
 const updatedAt = integer("updatedAt", { mode: "timestamp_ms" }).notNull();
@@ -235,11 +235,15 @@ export const order = sqliteTable(
     addressSnapshotJson: text("addressSnapshotJson"),
     paymentProvider: text("paymentProvider").notNull(),
     paymentChannel: text("paymentChannel"),
+    paymentChain: text("paymentChain"),
+    paymentAsset: text("paymentAsset"),
+    paymentTokenAmount: real("paymentTokenAmount"),
+    paymentTxHash: text("paymentTxHash"),
     fulfillmentSourceSnapshot: text("fulfillmentSourceSnapshot", { enum: ["LOCAL", "SUPPLIER"] }).notNull().default("LOCAL"),
     deliveryTypeSnapshot: text("deliveryTypeSnapshot", { enum: ["CARD_AUTO", "FIXED_CARD", "MANUAL", "EXPRESS", "SUPPLIER"] }).notNull(),
     fixedDeliveryContentSnapshot: text("fixedDeliveryContentSnapshot"),
     physicalStockReserved: integer("physicalStockReserved", { mode: "boolean" }).notNull().default(false),
-    status: text("status", { enum: ["PENDING", "PAID", "DELIVERED", "CLOSED", "FAILED"] }).notNull().default("PENDING"),
+    status: text("status", { enum: ["PENDING", "PAID", "DELIVERED", "CLOSED", "EXPIRED", "FAILED"] }).notNull().default("PENDING"),
     paymentStatus: text("paymentStatus", { enum: ["UNPAID", "PAID", "FAILED"] }).notNull().default("UNPAID"),
     deliveryStatus: text("deliveryStatus", { enum: ["NOT_DELIVERED", "DELIVERING", "DELIVERED", "FAILED"] }).notNull().default("NOT_DELIVERED"),
     deliveryToken: text("deliveryToken"),
@@ -272,7 +276,7 @@ export const card = sqliteTable(
     productId: integer("productId").notNull().references(() => productV2.id),
     productSkuId: integer("productSkuId").references(() => productSku.id),
     content: text("content").notNull(),
-    status: text("status", { enum: ["UNUSED", "SOLD", "DISABLED"] }).notNull().default("UNUSED"),
+    status: text("status", { enum: ["UNUSED", "SOLD", "DISABLED", "RESERVED"] }).notNull().default("UNUSED"),
     batchNo: text("batchNo"),
     orderId: integer("orderId").references(() => order.id, { onDelete: "set null" }),
     soldAt: integer("soldAt", { mode: "timestamp_ms" }),
@@ -367,7 +371,7 @@ export const paymentProvider = sqliteTable(
     updatedAt,
   },
   (table) => [
-    uniqueIndex("paymentProvider_provider_unique").on(table.provider),
+    uniqueIndex("paymentProvider_name_unique").on(table.name),
     index("paymentProvider_enabled_sort_idx").on(table.isEnabled, table.sort),
   ],
 );
@@ -508,13 +512,15 @@ export const supplierAccount = sqliteTable(
   "supplierAccount",
   {
     id: text("id").primaryKey(),
-    provider: text("provider", { enum: ["acg", "dujiao_next"] }).notNull(),
+    provider: text("provider", { enum: ["acg", "dujiao_next", "loot_paglu"] }).notNull(),
     baseUrl: text("baseUrl").notNull(),
     normalizedApiOrigin: text("normalizedApiOrigin").notNull(),
     protocolVersion: text("protocolVersion").notNull(),
     name: text("name").notNull(),
     currency: text("currency").notNull().default("CNY"),
     currencyDecimals: integer("currencyDecimals").notNull().default(2),
+    /** 汇率：1 上游币种 = X 人民币，用于导入定价时换算成本 */
+    exchangeRateToCny: text("exchangeRateToCny").notNull().default("1"),
     credentialsJson: text("credentialsJson").notNull(),
     credentialsRevision: integer("credentialsRevision").notNull().default(1),
     balanceMinor: text("balanceMinor"),
@@ -544,7 +550,7 @@ export const supplierBinding = sqliteTable(
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
     productSkuId: integer("productSkuId").notNull().references(() => productSku.id, { onDelete: "cascade" }),
-    provider: text("provider", { enum: ["acg", "dujiao_next"] }).notNull(),
+    provider: text("provider", { enum: ["acg", "dujiao_next", "loot_paglu"] }).notNull(),
     normalizedApiOrigin: text("normalizedApiOrigin").notNull(),
     protocolVersion: text("protocolVersion").notNull(),
     upstreamProductId: text("upstreamProductId").notNull(),
@@ -554,6 +560,9 @@ export const supplierBinding = sqliteTable(
     purchaseContextJson: text("purchaseContextJson"),
     referenceCostMinor: text("referenceCostMinor").notNull(),
     maxCostMinor: text("maxCostMinor").notNull(),
+    /** 关联前本地 SKU 的发货方式，取消关联时恢复（避免硬编码成 MANUAL 导致用户改不回去） */
+    previousFulfillmentSource: text("previousFulfillmentSource"),
+    previousDeliveryType: text("previousDeliveryType"),
     stockQuantity: integer("stockQuantity").notNull().default(0),
     remoteStatus: text("remoteStatus", { enum: ["active", "inactive", "deleted", "unknown"] }).notNull().default("unknown"),
     lastSyncedAt: integer("lastSyncedAt", { mode: "timestamp_ms" }),

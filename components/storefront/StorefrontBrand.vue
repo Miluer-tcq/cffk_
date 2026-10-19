@@ -9,12 +9,12 @@
 import { computed } from "vue";
 import { usePageContext } from "vike-vue/usePageContext";
 
-import logoUrl from "@/assets/logo.svg?url";
+import logoUrl from "@/assets/xyshop-logo.svg?url";
 
 type Site = { name?: string | null; logo?: string | null };
 type PageContext = ReturnType<typeof usePageContext> & { site?: Site | null };
 
 const pageContext = usePageContext() as PageContext;
-const siteName = computed(() => pageContext.site?.name?.trim() || "CFFK-Shop");
+const siteName = computed(() => pageContext.site?.name?.trim() || "星云Shop");
 const brandLogoUrl = computed(() => pageContext.site?.logo || logoUrl);
 </script>

@@ -21,6 +21,16 @@
       <span class="pill10" style="left:22%;top:14%">+10 亿</span><span class="pill10" style="right:20%;top:30%">+10 亿</span><span class="pill10" style="left:28%;bottom:12%">+10 亿</span>
       <span class="mdot" style="left:14%;top:62%"></span><span class="mdot" style="right:14%;bottom:20%;width:14px;height:14px"></span><span class="mdot" style="right:38%;top:10%;width:8px;height:8px"></span>
     </template>
+    <template v-else-if="variant === 'duolingo'">
+      <img v-if="fallbackIcon" :src="fallbackIcon" alt="Duolingo" class="duobig" />
+      <span class="gcirc" style="left:10%;top:20%"></span><span class="gcirc" style="right:12%;bottom:24%"></span>
+      <div class="d1"><b>1</b><i>年</i></div><div class="d1s">Super 会员,快乐学习</div>
+    </template>
+    <template v-else-if="variant === 'adobe'">
+      <svg class="adobe-a" viewBox="0 0 100 100"><path d="M50 10 L90 90 L70 90 L50 45 L30 90 L10 90 Z" fill="#fff" opacity="0.9"/></svg>
+      <span class="adot" style="left:12%;top:20%"></span><span class="adot" style="right:14%;bottom:22%;width:14px;height:14px"></span><span class="adot" style="left:44%;top:14%;width:8px;height:8px"></span>
+      <div class="a12"><b>1</b><i>年</i></div><div class="a12s">全家桶会员,创意无限</div>
+    </template>
     <template v-else>
       <img v-if="fallbackIcon" :src="fallbackIcon" :alt="product.name" class="nj-generic-icon" />
       <span class="gcirc" style="left:10%;top:20%"></span><span class="gcirc" style="right:12%;bottom:24%"></span>
@@ -42,6 +52,8 @@ const variant = computed(() => {
   if (/gemini/i.test(hay)) return "gemini";
   if (/\bx\b/i.test(hay) || /推特/i.test(hay)) return "x";
   if (/\bmuse\b/i.test(hay)) return "muse";
+  if (/adobe/i.test(hay)) return "adobe";
+  if (/duolingo|多邻国/i.test(hay)) return "duolingo";
   return "generic";
 });
 
@@ -62,6 +74,8 @@ const fallbackIcon = computed(() => pickBrandIcon(props.product.categoryName) ??
 .nj-banner:has(.gstar) { background: linear-gradient(135deg, #c4b0f8 0%, #9d7bee 60%, #7e57e8 100%); }
 .nj-banner:has(.xcard) { background: linear-gradient(120deg, #f8fafc 0%, #edf1f7 100%); }
 .nj-banner:has(.musebig) { background: linear-gradient(135deg, #fcebd8 0%, #f8d9b4 65%, #f3c795 100%); }
+.nj-banner:has(.adobe-a) { background: linear-gradient(135deg, #fa0f00 0%, #d60b00 60%, #a80800 100%); }
+.nj-banner:has(.duobig) { background: linear-gradient(120deg, #e6f9f4 0%, #f2fbf8 100%); }
 .nj-banner:has(.nj-generic-icon) { background: linear-gradient(120deg, #e6f9f4 0%, #f2fbf8 100%); display: flex; align-items: center; justify-content: center; }
 .nj-generic-icon { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 14px 30px rgba(20, 184, 166, 0.22); }
 /* chatgpt cards */
@@ -92,4 +106,15 @@ const fallbackIcon = computed(() => pickBrandIcon(props.product.categoryName) ??
 .pill10 { position: absolute; background: #fff7ed; color: #c2410c; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px; box-shadow: 0 3px 10px rgba(194, 65, 12, 0.2); white-space: nowrap; }
 .mdot { position: absolute; width: 11px; height: 11px; border-radius: 50%; background: #f59e0b; opacity: 0.5; }
 .gcirc { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #5fddb8; opacity: 0.4; }
+/* adobe */
+.adobe-a { position: absolute; left: 27%; top: 50%; width: 110px; height: 110px; transform: translate(-50%, -50%); filter: drop-shadow(0 0 26px rgba(255, 255, 255, 0.4)); }
+.adot { position: absolute; width: 12px; height: 12px; background: #fff; border-radius: 50%; opacity: 0.6; box-shadow: 0 0 12px #fff; }
+.a12 { position: absolute; right: 26px; bottom: 36px; color: #fff; font-weight: 800; line-height: 1; }
+.a12 b { font-size: 46px; } .a12 i { font-style: normal; font-size: 20px; margin-left: 3px; }
+.a12s { position: absolute; right: 26px; bottom: 15px; color: rgba(255, 255, 255, 0.78); font-size: 12px; }
+/* duolingo */
+.duobig { position: absolute; left: 38%; top: 50%; width: 110px; height: 110px; transform: translate(-50%, -50%); border-radius: 26px; box-shadow: 0 14px 30px rgba(20, 184, 166, 0.25); }
+.d1 { position: absolute; right: 26px; bottom: 36px; color: #0f766e; font-weight: 800; line-height: 1; }
+.d1 b { font-size: 46px; } .d1 i { font-style: normal; font-size: 20px; margin-left: 3px; }
+.d1s { position: absolute; right: 26px; bottom: 15px; color: rgba(15, 118, 110, 0.7); font-size: 12px; }
 </style>
