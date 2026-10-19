@@ -15,6 +15,21 @@ import { handleDujiaoSupplierCallback } from "./supplier/callback";
 
 function getApp() {
   const app = new Hono<{ Bindings: Record<string, unknown> & { DB: D1Database } }>();
+  // 安全响应头：防点击劫持、MIME 嗅探，强制 HTTPS。
+  // CSP 取 SPA 兼容的宽松策略（后续可收紧），frame-ancestors none 防 iframe 嵌入。
+  app.use(async (context, next) => {
+    await next();
+    const headers = context.res.headers;
+    if (!headers.has("X-Content-Type-Options")) headers.set("X-Content-Type-Options", "nosniff");
+    if (!headers.has("X-Frame-Options")) headers.set("X-Frame-Options", "DENY");
+    if (!headers.has("Strict-Transport-Security"))
+      headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    if (!headers.has("Content-Security-Policy"))
+      headers.set(
+        "Content-Security-Policy",
+        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+      );
+  });
   app.onError(async (error, context) => {    await reportUnexpectedRequestError("hono", error, context.req.raw);
     if (context.req.path.startsWith("/api/payments/")) return context.text("failure", 500);
     if (context.req.path.startsWith("/api/")) return context.json({ code: "INTERNAL_ERROR", message: "接口异常，请稍后重试。", data: null }, 500);

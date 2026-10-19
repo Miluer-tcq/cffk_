@@ -205,6 +205,7 @@ export const errorMessages: Record<string, string> = {
   DISCOUNT_CODE_EXHAUSTED: "优惠券已达使用上限。",
   DISCOUNT_CODE_MIN_AMOUNT: "订单金额未达到优惠券门槛。",
   DISCOUNT_CODE_PRODUCT_NOT_ALLOWED: "此优惠券不能用于该商品。",
+  DISCOUNT_PREVIEW_RATE_LIMITED: "操作过于频繁，请稍后再试。",
   ORDER_CREATE_FAILED: "订单创建失败，请稍后重试。",
 
   SUPPLIER_ACCOUNT_INPUT_INVALID: "供应商账号信息无效，请检查协议版本和凭证字段。",
